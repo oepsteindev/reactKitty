@@ -30,3 +30,16 @@
     transform: rotate(360deg);
   }
 }
+
+.green {
+  color: green;
+}
+
+.red {
+  color: red;
+}
+
+.greenies {
+  color: #7ebc59;
+  font-weight: bold;
+}
