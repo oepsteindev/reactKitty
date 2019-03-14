@@ -37,49 +37,50 @@ class App extends Component {
     console.log("mounted");
   }
 
+
   async getdata(zip) {
-    await fetch(
-      "https://api.wunderground.com/api/d5b402928887a79d/forecast/geolookup/conditions/q/" +
-        zip +
-        "/format.json"
-    )
-      .then(response => response.json())
-      .then(data => {
-        const bad_hair_cat =
-          "http://img06.deviantart.net/2c2a/i/2013/236/5/5/doodle_237___persian_cat_by_giovannag-d6jlpei.jpg";
-        const good_hair_cat = "http://i.imgur.com/ZiEBSak.jpg?1";
-        let { current_observation, location } = data;
 
-        let { city } = location;
-        let { dewpoint_f } = current_observation;
-        let { temp_f } = current_observation;
-        let { dewpoint } = current_observation;
-        let { dewpoint_string } = current_observation;
-        let { relative_humidity } = current_observation;
-        let { icon_url } = current_observation;
-        let image = dewpoint_f > 65 ? bad_hair_cat : good_hair_cat;
-        let desc =
-          dewpoint_f > 65 ? "Bad hair day! Run!" : "Good hair day, good kitty!";
-        let temp = "The Current temperature in " + city + " is: " + temp_f;
-        let color = dewpoint_f > 65 ? "red" : "green";
+    // await response of fetch 
+    let location_response = await fetch('http://dataservice.accuweather.com/locations/v1/cities/search?apikey=<API_KEY>&q=33614&language=en-us');
+    // proceed once promise is resolved
+    let location_json = await location_response.json();
+    
+    let ld = location_json[0];
 
-        this.setState({
-          dewpoint_f: dewpoint_f,
-          city: city,
-          bad_hair_cat: bad_hair_cat,
-          good_hair_cat: good_hair_cat,
-          temp_f: temp_f,
-          temp: temp,
-          dewpoint: dewpoint,
-          humidity: relative_humidity,
-          icon_url: icon_url,
-          image: image,
-          dewpoint_string: dewpoint_string,
-          desc: desc,
-          color: color,
-          isLoaded: 1
-        });
-      });
+   
+    let weather_response = await fetch('http://dataservice.accuweather.com/currentconditions/v1/33614?apikey=<API_KEY>&language=en-us&details=true');
+
+    let weather_json = await weather_response.json();
+    
+    let wd = weather_json[0];
+
+    const bad_hair_cat =
+            "http://img06.deviantart.net/2c2a/i/2013/236/5/5/doodle_237___persian_cat_by_giovannag-d6jlpei.jpg";
+      const good_hair_cat = "http://i.imgur.com/ZiEBSak.jpg?1";
+      let dewpoint = wd.DewPoint.Imperial.Value;
+      let city = ld.EnglishName;
+      let temp_f = wd.Temperature.Imperial.Value;
+      let image = dewpoint > 65 ? bad_hair_cat : good_hair_cat;
+      let desc = dewpoint > 65 ? "Bad hair day! Run!" : "Good hair day, good kitty!";
+      let temp = "The Current temperature in " + city + " is: " + temp_f;
+      let color = dewpoint > 65 ? "red" : "green";
+
+      this.setState({
+            dewpoint_f: dewpoint,
+            city: city,
+            bad_hair_cat: bad_hair_cat,
+            good_hair_cat: good_hair_cat,
+            temp_f: temp_f,
+            temp: temp,
+            dewpoint: wd.DewPoint.Imperial.Value,
+            humidity: wd.RelativeHumidity,
+            icon_url: 'icon_url',
+            image: image,
+            dewpoint_string: dewpoint,
+            desc: desc,
+            color: color,
+            isLoaded: 1
+          });
   }
 
   //in your component
@@ -92,13 +93,13 @@ class App extends Component {
     if (this.state.isLoaded === 1) {
       return (
         <div>
-          <span>Current Dewpoint:</span>
+          <span>The Current Dewpoint is:</span>
           <span className={this.state.color}>
             <strong>{this.state.dewpoint_string}</strong>
           </span>
-          <br />
+          <br /><br />
         </div>
-      );
+        );
     } else {
       return false;
     }
@@ -108,11 +109,12 @@ class App extends Component {
     if (this.state.isLoaded === 1) {
       return (
         <div>
-          Relative Humidity:
+        <br />
+         The Relative Humidity is:
           <span className={this.state.color}>
             <strong>{this.state.humidity}</strong>
           </span>
-          <br />
+           <br /><br />
         </div>
       );
     } else {
@@ -176,11 +178,13 @@ class App extends Component {
         <div className="container panel panel-default">
           <h3>The React Version!</h3>
           <br />
-          This React app hits the WeatherUnderground API, which returns a giant
+          This React app hits the Accuweather.com API, which returns a giant
           JSON object, that I parse so that Weather Kitty can tell you if you're
           going to have bad hair day or not. I've written and re-written this
           app in VueJS, NodeJS, VanillaJS, and Python, and its in memory of my
           cat, whose name was Kitty. Enter your zip code to get started!
+
+          This app used to hit the WeatherUnderground API until that went to an expensive paid service. Here we are reconfigured to use a new API! 
           <br />
           <hr />
           <h3>{this.state.desc}</h3>
