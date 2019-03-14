@@ -41,14 +41,14 @@ class App extends Component {
   async getdata(zip) {
 
     // await response of fetch 
-    let location_response = await fetch('http://dataservice.accuweather.com/locations/v1/cities/search?apikey=e9T9F0WpM34dCUFwXBr846u96lqZPfoW&q=33614&language=en-us');
+    let location_response = await fetch('http://dataservice.accuweather.com/locations/v1/cities/search?apikey=<API_KEY>&q=33614&language=en-us');
     // proceed once promise is resolved
     let location_json = await location_response.json();
     
     let ld = location_json[0];
 
    
-    let weather_response = await fetch('http://dataservice.accuweather.com/currentconditions/v1/33614?apikey=e9T9F0WpM34dCUFwXBr846u96lqZPfoW&language=en-us&details=true');
+    let weather_response = await fetch('http://dataservice.accuweather.com/currentconditions/v1/33614?apikey=<API_KEY>&language=en-us&details=true');
 
     let weather_json = await weather_response.json();
     
