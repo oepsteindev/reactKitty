@@ -40,15 +40,17 @@ class App extends Component {
 
   async getdata(zip) {
 
+    const apiKey = `${process.env.REACT_APP_WEATHER_API_KEY}`;
+
     // await response of fetch 
-    let location_response = await fetch('http://dataservice.accuweather.com/locations/v1/cities/search?apikey=<API_KEY>&q=33614&language=en-us');
+    let location_response = await fetch('http://dataservice.accuweather.com/locations/v1/cities/search?apikey='+apiKey+'&q=33614&language=en-us');
     // proceed once promise is resolved
     let location_json = await location_response.json();
     
     let ld = location_json[0];
 
    
-    let weather_response = await fetch('http://dataservice.accuweather.com/currentconditions/v1/33614?apikey=<API_KEY>&language=en-us&details=true');
+    let weather_response = await fetch('http://dataservice.accuweather.com/currentconditions/v1/33614?apikey='+apiKey+'&language=en-us&details=true');
 
     let weather_json = await weather_response.json();
     
